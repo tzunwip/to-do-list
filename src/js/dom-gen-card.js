@@ -79,6 +79,7 @@ export const Card = (parent) => {
   checkmarkButton.addEventListener("click", (e) => {
     e.stopPropagation();
     onClickCheckAction(checkmarkIcon, container.getAttribute("data-unique-id"));
+    container.classList.toggle("card--checked");
   });
   
   // delete button event listener
@@ -109,6 +110,7 @@ export const Card = (parent) => {
   // populates card information with task object input
   const populateCard = (newTaskObj, options = {}) => {
     container.id = newTaskObj.uid;
+    if (newTaskObj.isChecked) container.classList.add("card--checked")
     if ("display" in options) displayElement(options.display, notesElement)
     container.setAttribute("data-unique-id", newTaskObj.uid)
     setCheckStyles(checkmarkIcon, newTaskObj.isCompleted);
@@ -127,24 +129,12 @@ export const Card = (parent) => {
 // checkmark button related functions and variables
 const checkedClasses = ["far", "fa-check-square", "checked"];
 const uncheckedClasses = ["far", "fa-square"];
-const parentChecked = ["card__list-item--checked"];
-const parentUnchecked = ["card__list-item--unchecked"];
 
 const setCheckStyles = (targetElement, setChecked) => {
   if (setChecked) {
     setElementClass(targetElement, uncheckedClasses, checkedClasses);
-    setElementClass(
-      targetElement.parentElement,
-      parentUnchecked,
-      parentChecked
-    );
   } else {
     setElementClass(targetElement, checkedClasses, uncheckedClasses);
-    setElementClass(
-      targetElement.parentElement,
-      parentChecked,
-      parentUnchecked
-    );
   }
 };
 
