@@ -28,7 +28,7 @@ export const generateHome = () => {
 
   // add chevron collapsed/expanded indicator
   const overdueChevron = createBox(overdue.header, "i", {
-    classList: "fas fa-chevron-circle-down",
+    classList: "fas fa-chevron-down",
   })
 
   // hides overdue tasks on load
@@ -49,7 +49,7 @@ export const generateHome = () => {
 
   // add chevron collapsed/expanded indicator
   const noDueDateChevron = createBox(noDueDate.header, "i", {
-    classList: "fas fa-chevron-circle-down",
+    classList: "fas fa-chevron-down",
   })
 
   // hides no due date tasks by default
@@ -105,7 +105,7 @@ export const generateHome = () => {
 
   // remaining tasks with due date
   const restDated = generateSection(main, {
-    title: `After ${verboseMonth}`,
+    title: `Later`,
     classList: "others",
     criteria: assembleDueDateCriteria(breakDates.monthEnd),
   })
@@ -137,9 +137,13 @@ const generateSection = (parent, input) => {
     classList: `home-section__card-container ${input.classList}__card-container`,
   })
 
-  if (searchResult.length == 0) {
+  // does not display overdue or undated sections if empty
+  if ((input.classList == "overdue" || input.classList == "no-date") && searchResult.length == 0) {
+    container.classList.add("display-none");
+  } else if (searchResult.length == 0) {
     createBox(cardContainer, "p", {
-      textContent: "No tasks",
+      classList: "home-section__empty",
+      textContent: "No tasks here",
     })
   } else {
     generateCards(cardContainer, searchResult, {display: "collapse"})
@@ -205,10 +209,12 @@ export const generateSearchResults = (inputArray) => {
 
 // generates section priority counter traffic lights
 const createTrafficLights = (parent, searchResult) => {
-  let priorityCounter = {high: 0, medium: 0, low: 0, none: 0}
+  let priorityCounter = {high: 0, medium: 0, low: 0}
   
   searchResult.forEach((task) => {
-    priorityCounter[task.priority || "none"]++
+    if (!task.priority) return
+  
+    priorityCounter[task.priority]++
   })
   
   const container = createBox(parent, "div", {
