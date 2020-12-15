@@ -64,10 +64,15 @@ export const Card = (parent) => {
   const notesElement = createBox(container, "p", {
     classList: "card__notes",
   });
+
+  const cardDisplayIndicator = createBox(container, "i", {
+    classList: "card__display-indicator fas fa-caret-up rotate-180",
+  })
   
   // toggle card expanded/collapsed
   container.addEventListener("click", () => {
     displayElement("toggle", notesElement)
+    setTimeout(() => cardDisplayIndicator.classList.toggle("rotate-180"), 50)
   });
   
   // toggle completed event listener
