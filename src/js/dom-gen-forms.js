@@ -1,4 +1,4 @@
-import { createBox, createSelectElement } from "./dom-elements";
+import { createBox, createDatalistElement, createSelectElement } from "./dom-elements";
 import { data } from "./data-controller";
 import { displayElement, convertHTMLDateToISO, getVerboseDate, isSearchMode } from "./utility-functions";
 import { generateHome, generateSearchResults } from "./dom-gen-main";
@@ -9,9 +9,6 @@ export const createNewTaskForm = () => {
 
   // populate new task form
   newTaskStickyForm.formHeader.textContent = "New Task";
-  newTaskStickyForm.titleTextArea.placeholder = "Title";
-  newTaskStickyForm.projectTextArea.placeholder = "Project";
-  newTaskStickyForm.notesTextArea.placeholder = "Notes";
 
   // new-task-form event listeners
   newTaskStickyForm.form.addEventListener("submit", (e) => {
@@ -51,9 +48,10 @@ export const createNewTaskForm = () => {
   newTaskStickyForm.closeButton.addEventListener("click", () => {
     if (isSearchMode()) {
       displayElement("collapse", "#new-task-form")
-      setTimeout(displayElement, 100, "expand", "#search-form")
+      setTimeout(displayElement, 200, "expand", "#search-form")
+    } else {
+      displayElement("collapse", "#new-task-form")
     }
-    displayElement("collapse", "#new-task-form")
   })
 
   const stickyContainer = document.querySelector(".sticky-container");
@@ -68,7 +66,7 @@ export const createModifyTaskForm = () => {
   modifyTaskStickyForm.closeButton.addEventListener("click", () => {
     if (isSearchMode()) {
       displayElement("collapse", "#modify-task-form")
-      setTimeout(displayElement, 100, "expand", "#search-form")
+      setTimeout(displayElement, 200, "expand", "#search-form")
     }
     displayElement("collapse", "#modify-task-form")
   })
@@ -149,7 +147,7 @@ const modifyFormSubmitAction = (e, uid, populateCardCallback) => {
     // populates card and expands card
     populateCardCallback(modifiedTaskObj, {display: "expand"})
     // shows form
-    setTimeout(displayElement, 250, "expand", "#search-form")
+    setTimeout(displayElement, 200, "expand", "#search-form")
   } else if (modifiedTaskObj) {
     // generates entire main with home layout
     generateHome()
@@ -173,17 +171,17 @@ export const createSearchForm = () => {
 
   // appends additional date input to search for upperBound dates
   const toDueDateContainer = createBox(false, "div", {
-    classList: `${formClass}__due-date-container`,
+    classList: `${formClass}__due-date-to-container`,
   });
 
   const toDueDateLabel = createBox(toDueDateContainer, "label", {
     htmlFor: `${formName}-due-date-input-to`,
-    textContent: "To",
-    ariaLabel: "Due Date to:",
+    textContent: "To:",
+    ariaLabel: "Due Date to",
   });
 
   const toDueDateInput = createBox(toDueDateContainer, "input", {
-    classList: `${formClass}__due-date`,
+    classList: `${formClass}__due-date-to`,
     type: "date",
     id: `${formName}-due-date-input-to`,
     name: "dueDateTo",
@@ -212,14 +210,7 @@ export const createSearchForm = () => {
   })
 
   // gets array of all existing project names
-  const projectNameArray = Object.keys(
-    data.getTagIndex().project)
-    .map((name) => {
-      return {
-        value: name,
-        text: name,
-      }
-    });
+  const projectNameArray = data.getTagNameArray("project")
 
   // adds dropdown option to search all priorites
   // and search none
@@ -261,7 +252,7 @@ export const createSearchForm = () => {
   newSearchForm.titleTextArea.ariaLabel = "Search for title and notes";
   newSearchForm.titleTextArea.required = false;
   newSearchForm.projectTextArea.remove();
-  newSearchForm.dueDateLabel.textContent = "From";
+  newSearchForm.dueDateLabel.textContent = "From:";
   newSearchForm.dueDateLabel.htmlFor = `${formName}-due-date-input-from`;
   newSearchForm.dueDateInput.id = `${formName}-due-date-input-from`;
   newSearchForm.dueDateInput.name = "dueDateFrom";
@@ -300,6 +291,8 @@ export const createSearchForm = () => {
       generateHome()
       window.scrollTo(0,0)
     }
+
+    newSearchForm.form.reset();
   })
 
   const stickyContainer = document.querySelector(".sticky-container")
@@ -310,7 +303,7 @@ export const createSearchForm = () => {
 const StickyForm = (formName, formClass, display = "collapse") => {
   // Form dom elements
   const form = createBox(false, "form", {
-    classList: formClass,
+    classList: `${formName} ${formClass}`,
     id: formName,
   });
   displayElement(display, form)
@@ -319,18 +312,28 @@ const StickyForm = (formName, formClass, display = "collapse") => {
     classList: `${formClass}__header`,
   });
 
-  const titleTextArea = createBox(form, "textarea", {
+  const titleTextArea = createBox(form, "input", {
     classList: `${formClass}__title`,
     required: true,
     ariaLabel: "Title Input",
     name: "title",
+    type: "text",
+    autocomplete: "off",
+    placeholder: "Title...",
   });
 
-  const projectTextArea = createBox(form, "textarea", {
+  const projectTextArea = createBox(form, "input", {
     classList: `${formClass}__project`,
     ariaLabel: "Project Input",
     name: "project",
+    type: "list",
+    placeholder: "Project...",
+    list: "project-datalist",
   });
+
+  const projectDatalist = createDatalistElement(form, {
+    id: "project-datalist",
+  }, data.getTagNameArray("project"))
 
   const dueDateContainer = createBox(form, "div", {
     classList: `${formClass}__due-date-container`,
@@ -338,7 +341,7 @@ const StickyForm = (formName, formClass, display = "collapse") => {
 
   const dueDateLabel = createBox(dueDateContainer, "label", {
     htmlFor: `${formName}-due-date-input`,
-    textContent: "Due Date",
+    textContent: "Due Date:",
   });
 
   const dueDateInput = createBox(dueDateContainer, "input", {
@@ -354,7 +357,7 @@ const StickyForm = (formName, formClass, display = "collapse") => {
 
   const priorityLabel = createBox(priorityContainer, "label", {
     htmlFor: `${formName}-priority-input`,
-    textContent: "Priority",
+    textContent: "Priority:",
   });
 
   const prioritySelect = createSelectElement(
@@ -364,7 +367,7 @@ const StickyForm = (formName, formClass, display = "collapse") => {
       name: "priority",
     },
     [
-      { value: "", textContent: "" },
+      { value: "", textContent: "None" },
       { value: "high", textContent: "High" },
       { value: "medium", textContent: "Medium" },
       { value: "low", textContent: "Low" },
@@ -375,6 +378,8 @@ const StickyForm = (formName, formClass, display = "collapse") => {
     classList: `${formClass}__notes`,
     ariaLabel: "Additional Notes Input",
     name: "notes",
+    placeholder: "Notes...",
+
   });
 
   const controlsContainer = createBox(form, "div", {
