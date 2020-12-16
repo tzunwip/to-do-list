@@ -209,12 +209,10 @@ export const generateSearchResults = (inputArray) => {
 
 // generates section priority counter traffic lights
 const createTrafficLights = (parent, searchResult) => {
-  let priorityCounter = {high: 0, medium: 0, low: 0}
+  let priorityCounter = {high: 0, medium: 0, low: 0, none: 0}
   
   searchResult.forEach((task) => {
-    if (!task.priority) return
-  
-    priorityCounter[task.priority]++
+    priorityCounter[task.priority || "none"]++
   })
   
   const container = createBox(parent, "div", {
