@@ -8,12 +8,10 @@ export const createBox = (parent, tag, attributes = {}) => {
     for(let key in attributes) {
       let value = attributes[key];
 
-      if (key in newBox) {
+      if ((key in newBox) && key !== "list") {
         newBox[key] = value;
       } else {
         newBox.setAttribute(key, value);
-        console.log(newBox);
-        console.log(`used setAttribute for ${key}: ${value}`);
       };
     };
   };
@@ -24,15 +22,29 @@ export const createBox = (parent, tag, attributes = {}) => {
 };
 
 export const createSelectElement = (parent, selectProps, optionArray) => {
-  const selectElement = createBox(parent, "select", { ...selectProps });
+  const selectElement = createBox(parent, "select", selectProps);
 
   const optionElements = {};
 
-  optionArray.forEach((obj) => {
-    const option = createBox(selectElement, "option", { ...obj });
+  optionArray.forEach(obj => {
+    const option = createBox(selectElement, "option", obj);
 
     optionElements[obj.value] = option;
   });
 
   return { selectElement, ...optionElements };
 };
+
+export const createDatalistElement = (parent, datalistProps, optionArray) => {
+  const datalistElement = createBox(parent, "datalist", datalistProps);
+
+  const optionElements = {};
+
+  optionArray.forEach((obj) => {
+    const option = createBox(datalistElement, "option", obj);
+
+    optionElements[obj.value] = option;
+  });
+
+  return datalistElement;
+}
