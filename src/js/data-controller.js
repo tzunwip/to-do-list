@@ -233,6 +233,17 @@ export const data = (() => {
     }
   }
 
+  const getTagNameArray = (tag) => {
+    return Object.keys(
+      data.getTagIndex()[tag])
+      .map((name) => {
+        return {
+          value: name,
+          text: name,
+        }
+      });
+  }
+
   return {
     addTask,
     deleteTask,
@@ -240,6 +251,7 @@ export const data = (() => {
     getAll,
     getSearch,
     getTagIndex,
+    getTagNameArray,
   };
 })();
 
