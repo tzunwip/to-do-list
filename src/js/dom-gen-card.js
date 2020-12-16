@@ -103,7 +103,7 @@ export const Card = (parent) => {
       return
     } else {
       displayElement("collapse", ".sticky-form.expanded-height")
-      setTimeout(displayElement, 100, "expand", "#modify-task-form")
+      setTimeout(displayElement, 200, "expand", "#modify-task-form")
     } 
   })
   

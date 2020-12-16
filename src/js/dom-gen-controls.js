@@ -1,5 +1,4 @@
 import { createBox } from "./dom-elements";
-import { createNewTaskForm, createSearchForm } from "./dom-gen-forms";
 import { findElement, displayElement } from "./utility-functions";
 
 // generates controls and sticky container
@@ -63,7 +62,7 @@ export const generateControls = () => {
     } else if (findElement(".sticky-form.expanded-height")) {
       displayElement("collapse", ".sticky-form.expanded-height")
       // require timeout to achieve popup effect
-      setTimeout(displayElement, 100, "expand", "#new-task-form")
+      setTimeout(displayElement, 200, "expand", "#new-task-form")
     } else {
       displayElement("expand", "#new-task-form")
     }
@@ -75,7 +74,7 @@ export const generateControls = () => {
     } else if (findElement(".sticky-form.expanded-height")) {
       displayElement("collapse", ".sticky-form.expanded-height")
       // require timeout to achieve popup effect
-      setTimeout(displayElement, 100, "expand", "#search-form")
+      setTimeout(displayElement, 200, "expand", "#search-form")
     } else {
       displayElement("expand", "#search-form")
     }
