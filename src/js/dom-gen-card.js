@@ -124,7 +124,10 @@ export const Card = (parent) => {
   const populateCard = (newTaskObj, options = {}) => {
     container.id = newTaskObj.uid;
     if (newTaskObj.isCompleted) container.classList.add("card--checked");
-    if ("display" in options) displayElement(options.display, notesElement);
+    if ("display" in options && options.display == "expand") {
+      cardDisplayIndicator.classList.remove("rotate-180");
+      displayElement(options.display, notesElement);
+    }
     container.setAttribute("data-unique-id", newTaskObj.uid);
     setCheckStyles(checkmarkIcon, newTaskObj.isCompleted);
     titleElement.textContent = newTaskObj.title;
