@@ -117,7 +117,7 @@ export const Card = (parent) => {
   // populates card information with task object input
   const populateCard = (newTaskObj, options = {}) => {
     container.id = newTaskObj.uid;
-    if (newTaskObj.isChecked) container.classList.add("card--checked");
+    if (newTaskObj.isCompleted) container.classList.add("card--checked");
     if ("display" in options) displayElement(options.display, notesElement);
     container.setAttribute("data-unique-id", newTaskObj.uid);
     setCheckStyles(checkmarkIcon, newTaskObj.isCompleted);
