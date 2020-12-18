@@ -54,8 +54,8 @@ export const getVerboseDate = (date, options, locale = "default") => {
 };
 
 export const getRandomISODate = () => {
-  let start = new Date().setDate(new Date().getDate() - 14);
-  let end = new Date().setMonth(new Date().getMonth() + 3);
+  let start = new Date().setDate(new Date().getDate() - 2);
+  let end = new Date().setDate(new Date().getDate() + 10);
   let randomInterval = (end - start) * Math.random();
   let randomDate = convertHTMLDateToISO(start + Math.floor(randomInterval));
 

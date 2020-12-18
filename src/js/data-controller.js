@@ -275,40 +275,68 @@ export const data = (() => {
   };
 })();
 
-data.addTask({
-  title: "task 0",
-  notes: "some notes 1",
-  project: "",
-  dueDate: getRandomISODate(),
-  priority: "high",
-});
-for (let i = 0; i < 10; i++) {
+const sampleTaskLibrary = () => {
   data.addTask({
-    title: "title 1",
-    notes: "some notes 1",
-    project: "",
+    title: "Family Dinner",
+    notes: "Bring potatoes and dessert",
+    project: "Family",
     dueDate: getRandomISODate(),
     priority: "high",
   });
+  
   data.addTask({
-    title: "title 2",
-    notes: "",
-    project: "shopping",
-    dueDate: getRandomISODate(),
-    priority: "",
-  });
-  data.addTask({
-    title: "title 3",
-    notes: "some notes 3",
-    project: "sports",
+    title: "Start planning CV website",
+    notes: "Brainstorm layout and content",
+    project: "Coding",
     dueDate: "",
     priority: "low",
   });
+
   data.addTask({
-    title: "title 3",
-    notes: "some notes 3",
-    project: "sports",
+    title: "Afternoon sailing trip",
+    notes: "Bring own water and sunscreen",
+    project: "Sailing",
+    dueDate: getRandomISODate(),
+    priority: "",
+  });
+
+  data.addTask({
+    title: "Finish reading Bitcoin Standard",
+    notes: "",
+    project: "Investing",
     dueDate: "",
+    priority: "high",
+  });
+
+  data.addTask({
+    title: "Buy more bitcoin and hold",
+    notes: "Price is currently 22,715 USD",
+    project: "Investing",
+    dueDate: "",
+    priority: "high",
+  });
+
+  data.addTask({
+    title: "Start studying React",
+    notes: "",
+    project: "Coding",
+    dueDate: getRandomISODate(),
     priority: "medium",
+  });
+
+  data.addTask({
+    title: "Improve delete task UX on to-do-list project",
+    notes: "Create mask with popup confirming delete task intentions",
+    project: "Coding",
+    dueDate: getRandomISODate(),
+    priority: "low",
+  });
+
+  data.addTask({
+    title: "Hike to the peak",
+    notes: "Bring exercise bands",
+    project: "Fitness",
+    dueDate: new Date(),
+    priority: "low",
   });
 }
