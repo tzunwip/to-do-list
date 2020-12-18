@@ -50,6 +50,7 @@ main {
   padding-bottom: 0;
   display: flex;
   flex-flow: column nowrap;
+  align-items: center;
 }
 
 .home-section {
@@ -416,7 +417,6 @@ footer {
 }
 
 /* #search-form specific */
-
 .search-form {
   grid: repeat(5, auto) / repeat(2, auto);
   grid-template-areas:
@@ -426,6 +426,11 @@ footer {
     "due-date due-date-to"
     "controls controls";
   justify-content: center;
+}
+
+/* .search-results specific */
+.search-results__header {
+  color: var(--gold);
 }
 
 /* priority specific tag colors */

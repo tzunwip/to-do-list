@@ -212,8 +212,8 @@ const returnWeekCriteria = (endOfDay, dayOne, dayTwo) => {
 export const generateSearchResults = (inputArray) => {
   const main = document.querySelector("main");
   main.innerHTML = "";
-  createBox(main, "h3", {
-    classList: "search-results_header",
+  createBox(main, "h2", {
+    classList: "search-results__header",
     textContent: "Search Results",
   });
   generateCards(main, inputArray, { display: "expand" });
