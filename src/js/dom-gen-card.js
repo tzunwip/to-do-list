@@ -6,7 +6,9 @@ import {
   findElement,
   capitalizeFirstLetter,
   displayElement,
+  isSearchMode,
 } from "./utility-functions";
+import { generateHome } from "./dom-gen-main";
 
 // card factory function
 export const Card = (parent) => {
@@ -92,8 +94,12 @@ export const Card = (parent) => {
     e.preventDefault();
     e.stopPropagation();
     if (confirm("Delete Task?")) {
-      container.remove();
       data.deleteTask(container.getAttribute("data-unique-id"));
+      if (isSearchMode()) {
+        container.remove();
+      } else {
+        generateHome();
+      }
     }
   });
 
