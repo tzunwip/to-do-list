@@ -86,8 +86,10 @@ export const Card = (parent) => {
   deleteCardButton.addEventListener("click", (e) => {
     e.preventDefault();
     e.stopPropagation();
-    container.remove();
-    data.deleteTask(container.getAttribute("data-unique-id"));
+    if (confirm("Delete Task?")) {
+      container.remove();
+      data.deleteTask(container.getAttribute("data-unique-id"));
+    }
   });
 
   // calls action to expand and populate modify task form
