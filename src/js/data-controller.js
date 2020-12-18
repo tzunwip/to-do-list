@@ -1,4 +1,9 @@
-import { getVerboseDate, convertHTMLDateToISO, convertISODateToMs, getRandomISODate } from "./utility-functions";
+import {
+  getVerboseDate,
+  convertHTMLDateToISO,
+  convertISODateToMs,
+  getRandomISODate,
+} from "./utility-functions";
 
 // data controller
 export const data = (() => {
@@ -34,7 +39,7 @@ export const data = (() => {
     const newTaskObj = Task(inputObj);
 
     _insertTask(newTaskObj);
-    _updateTagIndex({new: {...newTaskObj}});
+    _updateTagIndex({ new: { ...newTaskObj } });
 
     return newTaskObj;
   };
@@ -42,17 +47,17 @@ export const data = (() => {
   const deleteTask = (inputUid) => {
     const targetIndex = _getIndex(inputUid);
 
-    _updateTagIndex({old: _dataArray[targetIndex]})
-    _pruneTagIndex()
+    _updateTagIndex({ old: _dataArray[targetIndex] });
+    _pruneTagIndex();
     _dataArray.splice(targetIndex, 1);
   };
 
   const modifyTask = (inputTask) => {
-    const index = _getIndex(inputTask.uid)
-    let modifiedTask = {..._dataArray[index]}
+    const index = _getIndex(inputTask.uid);
+    let modifiedTask = { ..._dataArray[index] };
 
-    deleteTask(inputTask.uid)
-    
+    deleteTask(inputTask.uid);
+
     // formats date if date exists and not Date format
     if ("dueDate" in inputTask && !(inputTask.dueDate instanceof Date)) {
       inputTask.dueDate = convertHTMLDateToISO(inputTask.dueDate);
@@ -60,12 +65,12 @@ export const data = (() => {
 
     for (let key in inputTask) {
       if (key !== "uid") {
-        modifiedTask[key] = inputTask[key]
+        modifiedTask[key] = inputTask[key];
       }
     }
-    
+
     _insertTask(modifiedTask);
-    _updateTagIndex({new: modifiedTask});
+    _updateTagIndex({ new: modifiedTask });
     _pruneTagIndex();
 
     return inputTask;
@@ -77,24 +82,24 @@ export const data = (() => {
 
   const getAll = () => {
     return _dataArray;
-  }; 
+  };
 
   // inserts taskObj in to _dataArray
   // by date then priority if existing date found
   const _insertTask = (taskObj) => {
-    let insertIndex
+    let insertIndex;
 
-    if ( _dataArray.length == 0) {
+    if (_dataArray.length == 0) {
       _dataArray.push(taskObj);
     } else if (taskObj.dueDate && _dataArray[0].dueDate > taskObj.dueDate) {
       _dataArray.unshift(taskObj);
     } else {
-      insertIndex = _findInsertIndex(taskObj)
+      insertIndex = _findInsertIndex(taskObj);
       // findIndex returns -1 if no matches found
       // push taskObj to end of array if -1
       // else insert in to insertIndex
       if (insertIndex == -1) {
-        _dataArray.push(taskObj)
+        _dataArray.push(taskObj);
       } else {
         _dataArray.splice(insertIndex, 0, taskObj);
       }
@@ -104,33 +109,41 @@ export const data = (() => {
   const _findInsertIndex = (taskObj) => {
     return _dataArray.findIndex((curObj) => {
       // assign empty dueDates Infinity
-      // undated tasks should inserted towards 
+      // undated tasks should inserted towards
       // end of array
-      let curObjDueDate = curObj.dueDate ? convertISODateToMs(curObj.dueDate) : Infinity;
-      let taskObjDueDate = taskObj.dueDate ? convertISODateToMs(taskObj.dueDate) : Infinity;
+      let curObjDueDate = curObj.dueDate
+        ? convertISODateToMs(curObj.dueDate)
+        : Infinity;
+      let taskObjDueDate = taskObj.dueDate
+        ? convertISODateToMs(taskObj.dueDate)
+        : Infinity;
 
       if (curObjDueDate == taskObjDueDate) {
         // compares numeric values of priority
-        const curObjPriority = _returnNumericPriority(curObj.priority)
-        const taskObjPriority = _returnNumericPriority(taskObj.priority)
-        return curObjPriority <= taskObjPriority
+        const curObjPriority = _returnNumericPriority(curObj.priority);
+        const taskObjPriority = _returnNumericPriority(taskObj.priority);
+        return curObjPriority <= taskObjPriority;
       } else {
         return curObjDueDate > taskObjDueDate;
       }
     });
-  }
+  };
 
   // converts priority to numeric value
   const _returnNumericPriority = (inputPriority) => {
-    if (inputPriority) inputPriority = inputPriority.toLowerCase()
+    if (inputPriority) inputPriority = inputPriority.toLowerCase();
     switch (inputPriority) {
-      case "high" : return 3;
-      case "medium" : return 2;
-      case "low" : return 1;
-      default : return 0;
+      case "high":
+        return 3;
+      case "medium":
+        return 2;
+      case "low":
+        return 1;
+      default:
+        return 0;
     }
-  }
-  
+  };
+
   // returns array containing matching results
   // searchCriteria parameter format {key: ["search", "strings",...],}
   // dueDate key requires {lowerBound, upperBound} input
@@ -143,12 +156,12 @@ export const data = (() => {
       });
     }
 
-    return resultsArray
+    return resultsArray;
   };
 
   const getTagIndex = () => {
-    return tagIndex
-  }
+    return tagIndex;
+  };
 
   // search logic
   // special logic for dueDate
@@ -156,29 +169,38 @@ export const data = (() => {
     const criteria = searchCriteria[key];
 
     if (criteria === "allValues") {
-      return true
+      return true;
     } else if (key === "dueDate") {
       if (!task[key] && !criteria.lowerBound && !criteria.upperBound) {
-        return true
+        return true;
       } else if (!task[key]) {
-      // rejects empty task dueDate strings
-        return false
+        // rejects empty task dueDate strings
+        return false;
       } else if (!("lowerBound" in criteria) || !criteria.lowerBound) {
-        return task[key] <= criteria.upperBound
+        return task[key] <= criteria.upperBound;
       } else if (!("upperBound" in criteria) || !criteria.upperBound) {
-        return task[key] >= criteria.lowerBound
+        return task[key] >= criteria.lowerBound;
       } else {
-        return task[key] >= criteria.lowerBound && task[key] <= criteria.upperBound;
+        return (
+          task[key] >= criteria.lowerBound && task[key] <= criteria.upperBound
+        );
       }
     } else if (key === "text") {
-      const localeDate = getVerboseDate(task.dueDate, {weekday: "long", year: "numeric", month: "long", day: "numeric",})
-      const string = `${task.title} ${task.notes} ${localeDate} ${task.priority} priority ${task.project} project`.toLowerCase()
+      const localeDate = getVerboseDate(task.dueDate, {
+        weekday: "long",
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+      });
+      const string = `${task.title} ${task.notes} ${localeDate} ${task.priority} priority ${task.project} project`.toLowerCase();
 
-      return string.includes(criteria.toLowerCase())
+      return string.includes(criteria.toLowerCase());
     } else if (!criteria || !task[key]) {
-      return criteria == task[key] // cannot use === as uid may be number/string
+      return criteria == task[key]; // cannot use === as uid may be number/string
     } else {
-      return task[key].toString().toLowerCase() === criteria.toString().toLowerCase()
+      return (
+        task[key].toString().toLowerCase() === criteria.toString().toLowerCase()
+      );
     }
   };
 
@@ -191,7 +213,7 @@ export const data = (() => {
       if (obj.old && key in obj.old && obj.old[key]) {
         let oldTagValue = obj.old[key];
         let {
-          [key]: { [oldTagValue]: oldTagArray},
+          [key]: { [oldTagValue]: oldTagArray },
         } = tagIndex;
 
         const oldTargetIndex = oldTagArray.indexOf(obj.old.uid);
@@ -207,7 +229,7 @@ export const data = (() => {
           [key]: { [newTagValue]: newTagArray },
         } = tagIndex;
 
-        // pushes uid to array if key exists 
+        // pushes uid to array if key exists
         // else creates key with new array
         if (obj.new[key] in tagIndex[key]) {
           newTagArray.push(obj.new.uid);
@@ -220,10 +242,10 @@ export const data = (() => {
 
   // deletes keys with empty arrays in tagIndex
   const _pruneTagIndex = () => {
-    const excludedKeys = ["priority",]
+    const excludedKeys = ["priority"];
 
     for (let tagIndexKey in tagIndex) {
-      if (excludedKeys.includes(tagIndexKey)) continue
+      if (excludedKeys.includes(tagIndexKey)) continue;
 
       for (let tagItemKey in tagIndex[tagIndexKey]) {
         if (tagIndex[tagIndexKey][tagItemKey].length == 0) {
@@ -231,18 +253,16 @@ export const data = (() => {
         }
       }
     }
-  }
+  };
 
   const getTagNameArray = (tag) => {
-    return Object.keys(
-      data.getTagIndex()[tag])
-      .map((name) => {
-        return {
-          value: name,
-          text: name,
-        }
-      });
-  }
+    return Object.keys(data.getTagIndex()[tag]).map((name) => {
+      return {
+        value: name,
+        text: name,
+      };
+    });
+  };
 
   return {
     addTask,

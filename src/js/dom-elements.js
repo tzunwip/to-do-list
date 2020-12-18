@@ -5,16 +5,16 @@ export const createBox = (parent, tag, attributes = {}) => {
   if (attributes) {
     // iterates over each key:value pair and assigns attributes
     // using existing DOMElement properties or setAttribute method
-    for(let key in attributes) {
+    for (let key in attributes) {
       let value = attributes[key];
 
-      if ((key in newBox) && key !== "list") {
+      if (key in newBox && key !== "list") {
         newBox[key] = value;
       } else {
         newBox.setAttribute(key, value);
-      };
-    };
-  };
+      }
+    }
+  }
 
   if (parent) parent.appendChild(newBox);
 
@@ -26,7 +26,7 @@ export const createSelectElement = (parent, selectProps, optionArray) => {
 
   const optionElements = {};
 
-  optionArray.forEach(obj => {
+  optionArray.forEach((obj) => {
     const option = createBox(selectElement, "option", obj);
 
     optionElements[obj.value] = option;
@@ -47,4 +47,4 @@ export const createDatalistElement = (parent, datalistProps, optionArray) => {
   });
 
   return datalistElement;
-}
+};

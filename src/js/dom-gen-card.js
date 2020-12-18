@@ -1,7 +1,12 @@
 import { createBox } from "./dom-elements";
 import { populateModifyForm } from "./dom-gen-forms";
 import { data } from "./data-controller";
-import { getVerboseDate, findElement, capitalizeFirstLetter, displayElement } from "./utility-functions";
+import {
+  getVerboseDate,
+  findElement,
+  capitalizeFirstLetter,
+  displayElement,
+} from "./utility-functions";
 
 // card factory function
 export const Card = (parent) => {
@@ -67,21 +72,21 @@ export const Card = (parent) => {
 
   const cardDisplayIndicator = createBox(container, "i", {
     classList: "card__display-indicator fas fa-caret-up rotate-180",
-  })
-  
+  });
+
   // toggle card expanded/collapsed
   container.addEventListener("click", () => {
-    displayElement("toggle", notesElement)
-    setTimeout(() => cardDisplayIndicator.classList.toggle("rotate-180"), 50)
+    displayElement("toggle", notesElement);
+    setTimeout(() => cardDisplayIndicator.classList.toggle("rotate-180"), 50);
   });
-  
+
   // toggle completed event listener
   checkmarkButton.addEventListener("click", (e) => {
     e.stopPropagation();
     onClickCheckAction(checkmarkIcon, container.getAttribute("data-unique-id"));
     container.classList.toggle("card--checked");
   });
-  
+
   // delete button event listener
   deleteCardButton.addEventListener("click", (e) => {
     e.preventDefault();
@@ -97,24 +102,24 @@ export const Card = (parent) => {
     e.preventDefault();
     e.stopPropagation();
 
-    const uid = container.getAttribute("data-unique-id")
-    populateModifyForm(uid, populateCard)
+    const uid = container.getAttribute("data-unique-id");
+    populateModifyForm(uid, populateCard);
 
     // expands search-form if main is
     if (findElement("#modify-task-form.expanded-height")) {
-      return
+      return;
     } else {
-      displayElement("collapse", ".sticky-form.expanded-height")
-      setTimeout(displayElement, 200, "expand", "#modify-task-form")
-    } 
-  })
-  
+      displayElement("collapse", ".sticky-form.expanded-height");
+      setTimeout(displayElement, 200, "expand", "#modify-task-form");
+    }
+  });
+
   // populates card information with task object input
   const populateCard = (newTaskObj, options = {}) => {
     container.id = newTaskObj.uid;
-    if (newTaskObj.isChecked) container.classList.add("card--checked")
-    if ("display" in options) displayElement(options.display, notesElement)
-    container.setAttribute("data-unique-id", newTaskObj.uid)
+    if (newTaskObj.isChecked) container.classList.add("card--checked");
+    if ("display" in options) displayElement(options.display, notesElement);
+    container.setAttribute("data-unique-id", newTaskObj.uid);
     setCheckStyles(checkmarkIcon, newTaskObj.isCompleted);
     titleElement.textContent = newTaskObj.title;
     setDueDateTagStyles(dueDateElement, newTaskObj.dueDate);
@@ -172,7 +177,10 @@ const setDueDateTagStyles = (targetElement, inputValue) => {
   } else {
     targetElement.classList.remove("display-none");
     targetElement.textContent = getVerboseDate(inputValue, {
-      weekday: "short", year: "numeric", month: "short", day: "numeric",
+      weekday: "short",
+      year: "numeric",
+      month: "short",
+      day: "numeric",
     });
   }
 };

@@ -1,6 +1,15 @@
-import { createBox, createDatalistElement, createSelectElement } from "./dom-elements";
+import {
+  createBox,
+  createDatalistElement,
+  createSelectElement,
+} from "./dom-elements";
 import { data } from "./data-controller";
-import { displayElement, convertHTMLDateToISO, getVerboseDate, isSearchMode } from "./utility-functions";
+import {
+  displayElement,
+  convertHTMLDateToISO,
+  getVerboseDate,
+  isSearchMode,
+} from "./utility-functions";
 import { generateHome, generateSearchResults } from "./dom-gen-main";
 
 // creates sticky-form used to add new task
@@ -32,27 +41,27 @@ export const createNewTaskForm = () => {
       formInputs.title.value = "";
       formInputs.notes.value = "";
 
-      generateHome()
+      generateHome();
 
       // scrolls in to view and expands newly generated card
       // expands section if collapsed
-      const newCard = document.getElementById(newTaskObj.uid)
+      const newCard = document.getElementById(newTaskObj.uid);
       if (newCard.parentNode.classList.contains("collapsed-height")) {
-        displayElement("expand", newCard.parentNode)
+        displayElement("expand", newCard.parentNode);
       }
-      displayElement("expand", newCard.querySelector(".card__notes"))
+      displayElement("expand", newCard.querySelector(".card__notes"));
       newCard.scrollIntoView(true);
     }
   });
 
   newTaskStickyForm.closeButton.addEventListener("click", () => {
     if (isSearchMode()) {
-      displayElement("collapse", "#new-task-form")
-      setTimeout(displayElement, 200, "expand", "#search-form")
+      displayElement("collapse", "#new-task-form");
+      setTimeout(displayElement, 200, "expand", "#search-form");
     } else {
-      displayElement("collapse", "#new-task-form")
+      displayElement("collapse", "#new-task-form");
     }
-  })
+  });
 
   const stickyContainer = document.querySelector(".sticky-container");
   stickyContainer.appendChild(newTaskStickyForm.form);
@@ -65,11 +74,11 @@ export const createModifyTaskForm = () => {
   // modify-task-form event listeners
   modifyTaskStickyForm.closeButton.addEventListener("click", () => {
     if (isSearchMode()) {
-      displayElement("collapse", "#modify-task-form")
-      setTimeout(displayElement, 200, "expand", "#search-form")
+      displayElement("collapse", "#modify-task-form");
+      setTimeout(displayElement, 200, "expand", "#search-form");
     }
-    displayElement("collapse", "#modify-task-form")
-  })
+    displayElement("collapse", "#modify-task-form");
+  });
 
   const stickyContainer = document.querySelector(".sticky-container");
   stickyContainer.appendChild(modifyTaskStickyForm.form);
@@ -77,23 +86,33 @@ export const createModifyTaskForm = () => {
 
 // populates modify task form
 export const populateModifyForm = (uid, populateCardCallback) => {
-  const formNode = document.querySelector("#modify-task-form")
+  const formNode = document.querySelector("#modify-task-form");
   // gets task object from data controller
-  const inputTaskObj = data.getSearch({uid})[0]
+  const inputTaskObj = data.getSearch({ uid })[0];
 
   // define modify task form dom elements
-  const formHeader = formNode.querySelector(".sticky-form__header") ;
-  const titleTextArea = formNode.querySelector(".sticky-form__title") ;
-  const projectTextArea = formNode.querySelector(".sticky-form__project") ;
-  const dueDateInput = formNode.querySelector(".sticky-form__due-date") ;
-  const priorityOptions =  {
-    high: formNode.querySelector("#modify-task-form-priority-input option[value=high]"),
-    medium: formNode.querySelector("#modify-task-form-priority-input option[value=medium]"),
-    low: formNode.querySelector("#modify-task-form-priority-input option[value=low]"),
-    none: formNode.querySelector(`#modify-task-form-priority-input option[value=""]`),
-    selected: formNode.querySelector("#modify-task-form-priority-input option[selected]"), // targets the option currently selected
+  const formHeader = formNode.querySelector(".sticky-form__header");
+  const titleTextArea = formNode.querySelector(".sticky-form__title");
+  const projectTextArea = formNode.querySelector(".sticky-form__project");
+  const dueDateInput = formNode.querySelector(".sticky-form__due-date");
+  const priorityOptions = {
+    high: formNode.querySelector(
+      "#modify-task-form-priority-input option[value=high]"
+    ),
+    medium: formNode.querySelector(
+      "#modify-task-form-priority-input option[value=medium]"
+    ),
+    low: formNode.querySelector(
+      "#modify-task-form-priority-input option[value=low]"
+    ),
+    none: formNode.querySelector(
+      `#modify-task-form-priority-input option[value=""]`
+    ),
+    selected: formNode.querySelector(
+      "#modify-task-form-priority-input option[selected]"
+    ), // targets the option currently selected
   };
-  const notesTextArea = formNode.querySelector(".sticky-form__notes") ;
+  const notesTextArea = formNode.querySelector(".sticky-form__notes");
 
   // fill/select modify task form input fields
   formHeader.textContent = "Modify Task";
@@ -105,13 +124,13 @@ export const populateModifyForm = (uid, populateCardCallback) => {
   projectTextArea.defaultValue = inputTaskObj.project;
 
   // "sv" locale returns YYYY-MM-DD format date
-  const dueDateLocal = getVerboseDate(inputTaskObj.dueDate, {}, "sv")
-  dueDateInput.value = dueDateLocal
-  dueDateInput.defaultValue = dueDateLocal
+  const dueDateLocal = getVerboseDate(inputTaskObj.dueDate, {}, "sv");
+  dueDateInput.value = dueDateLocal;
+  dueDateInput.defaultValue = dueDateLocal;
 
   // deselects any selected option attribute
   if (priorityOptions.selected) {
-    priorityOptions.selected.defaultSelected = false
+    priorityOptions.selected.defaultSelected = false;
   }
   priorityOptions[inputTaskObj.priority || "none"].defaultSelected = true;
 
@@ -120,8 +139,9 @@ export const populateModifyForm = (uid, populateCardCallback) => {
 
   // adds updated modify form submit action event listener
   // !! do not use addEventListener as multiple submit actions can be layered
-  formNode.onsubmit = (e) => modifyFormSubmitAction(e, uid, populateCardCallback)
-}
+  formNode.onsubmit = (e) =>
+    modifyFormSubmitAction(e, uid, populateCardCallback);
+};
 
 // action called on modify task form submit button click
 const modifyFormSubmitAction = (e, uid, populateCardCallback) => {
@@ -139,28 +159,28 @@ const modifyFormSubmitAction = (e, uid, populateCardCallback) => {
     notes: formInputs.notes.value,
   });
 
-  displayElement("collapse", "#modify-task-form")
+  displayElement("collapse", "#modify-task-form");
 
   // displays search form if in search mode
   // else generates home page
   if (modifiedTaskObj && isSearchMode()) {
     // populates card and expands card
-    populateCardCallback(modifiedTaskObj, {display: "expand"})
+    populateCardCallback(modifiedTaskObj, { display: "expand" });
     // shows form
-    setTimeout(displayElement, 200, "expand", "#search-form")
+    setTimeout(displayElement, 200, "expand", "#search-form");
   } else if (modifiedTaskObj) {
     // generates entire main with home layout
-    generateHome()
-    
-    // scrolls to modified card, expands card and section 
-    const modifiedCard = document.getElementById(modifiedTaskObj.uid)
+    generateHome();
+
+    // scrolls to modified card, expands card and section
+    const modifiedCard = document.getElementById(modifiedTaskObj.uid);
     if (modifiedCard.parentNode.classList.contains("collapsed-height")) {
-      displayElement("expand", modifiedCard.parentNode)
+      displayElement("expand", modifiedCard.parentNode);
     }
-    displayElement("expand", modifiedCard.querySelector(".card__notes"))
+    displayElement("expand", modifiedCard.querySelector(".card__notes"));
     modifiedCard.scrollIntoView(true);
   }
-}
+};
 
 // creates search-form
 export const createSearchForm = () => {
@@ -189,9 +209,11 @@ export const createSearchForm = () => {
 
   toDueDateInput.addEventListener("input", () => {
     if (newSearchForm.dueDateInput.value > toDueDateInput.value) {
-      toDueDateInput.setCustomValidity("End Date cannot be earlier than Start Date")
+      toDueDateInput.setCustomValidity(
+        "End Date cannot be earlier than Start Date"
+      );
     }
-  })
+  });
 
   // inserts upperBound date input after lowerBound date input
   newSearchForm.form.insertBefore(
@@ -202,20 +224,20 @@ export const createSearchForm = () => {
   // task project dropdown selection
   const projectContainer = createBox(false, "div", {
     classList: `${formClass}__project-container`,
-  })
+  });
 
   const projectLabel = createBox(projectContainer, "label", {
     htmlFor: `${formName}-project`,
     textContent: "Project",
-  })
+  });
 
   // gets array of all existing project names
-  const projectNameArray = data.getTagNameArray("project")
+  const projectNameArray = data.getTagNameArray("project");
 
   // adds dropdown option to search all priorites
   // and search none
-  projectNameArray.unshift({value: "allValues", text: "All"})
-  projectNameArray.push({value: "", text: "None"})
+  projectNameArray.unshift({ value: "allValues", text: "All" });
+  projectNameArray.push({ value: "", text: "None" });
 
   // generates existing project dropdown selection element
   const projectSelect = createSelectElement(
@@ -223,7 +245,7 @@ export const createSearchForm = () => {
     {
       classList: `${formClass}__project-select`,
       name: "project",
-      id: `${formName}-project`
+      id: `${formName}-project`,
     },
     projectNameArray
   );
@@ -240,13 +262,16 @@ export const createSearchForm = () => {
   const noPriorityOption = createBox(false, "option", {
     value: "",
     textContent: "None",
-  })
+  });
 
   // appends no priority option after low option
-  newSearchForm.prioritySelect.selectElement.insertBefore(noPriorityOption, newSearchForm.prioritySelect["low"].nextSibling)
+  newSearchForm.prioritySelect.selectElement.insertBefore(
+    noPriorityOption,
+    newSearchForm.prioritySelect["low"].nextSibling
+  );
 
   // modifies/removes existing form template elements
-  newSearchForm.formHeader.textContent = "Search"
+  newSearchForm.formHeader.textContent = "Search";
   newSearchForm.titleTextArea.name = "text";
   newSearchForm.titleTextArea.placeholder = "Search title and notes...";
   newSearchForm.titleTextArea.ariaLabel = "Search for title and notes";
@@ -261,10 +286,10 @@ export const createSearchForm = () => {
 
   // search-form event listeners
   newSearchForm.form.addEventListener("submit", (e) => {
-    e.preventDefault()
-    window.scrollTo(0,0)
+    e.preventDefault();
+    window.scrollTo(0, 0);
 
-    const formInputs = e.target.elements
+    const formInputs = e.target.elements;
 
     const searchCriteria = {
       text: formInputs.text.value || "allValues",
@@ -276,26 +301,26 @@ export const createSearchForm = () => {
       priority: formInputs.priority.value,
     };
     if (!formInputs.dueDateFrom.value && !formInputs.dueDateTo.value) {
-      searchCriteria.dueDate = "allValues"
+      searchCriteria.dueDate = "allValues";
     }
 
-    const searchResults = data.getSearch(searchCriteria)
-    generateSearchResults(searchResults)
-  })
+    const searchResults = data.getSearch(searchCriteria);
+    generateSearchResults(searchResults);
+  });
 
   newSearchForm.closeButton.addEventListener("click", () => {
     if (!isSearchMode()) {
-      displayElement("collapse", newSearchForm.form)
+      displayElement("collapse", newSearchForm.form);
     } else {
-      displayElement("collapse", newSearchForm.form)
-      generateHome()
-      window.scrollTo(0,0)
+      displayElement("collapse", newSearchForm.form);
+      generateHome();
+      window.scrollTo(0, 0);
     }
 
     newSearchForm.form.reset();
-  })
+  });
 
-  const stickyContainer = document.querySelector(".sticky-container")
+  const stickyContainer = document.querySelector(".sticky-container");
   stickyContainer.appendChild(newSearchForm.form);
 };
 
@@ -306,7 +331,7 @@ const StickyForm = (formName, formClass, display = "collapse") => {
     classList: `${formName} ${formClass}`,
     id: formName,
   });
-  displayElement(display, form)
+  displayElement(display, form);
 
   const formHeader = createBox(form, "h3", {
     classList: `${formClass}__header`,
@@ -331,9 +356,13 @@ const StickyForm = (formName, formClass, display = "collapse") => {
     list: "project-datalist",
   });
 
-  const projectDatalist = createDatalistElement(form, {
-    id: "project-datalist",
-  }, data.getTagNameArray("project"))
+  const projectDatalist = createDatalistElement(
+    form,
+    {
+      id: "project-datalist",
+    },
+    data.getTagNameArray("project")
+  );
 
   const dueDateContainer = createBox(form, "div", {
     classList: `${formClass}__due-date-container`,
@@ -379,7 +408,6 @@ const StickyForm = (formName, formClass, display = "collapse") => {
     ariaLabel: "Additional Notes Input",
     name: "notes",
     placeholder: "Notes...",
-
   });
 
   const controlsContainer = createBox(form, "div", {
