@@ -24,6 +24,7 @@ const getMonthEndDate = (date) => {
 // get break dates for each section
 export const getBreakDates = () => {
   const now = new Date();
+  now.setHours(0, 0, 0, 0);
   const endOfDay = new Date();
   endOfDay.setHours(23, 59, 59, 999);
   const workweek = getNextDayDate(5);
