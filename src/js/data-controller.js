@@ -41,6 +41,8 @@ export const data = (() => {
     _insertTask(newTaskObj);
     _updateTagIndex({ new: { ...newTaskObj } });
 
+    _setStorage();
+
     return newTaskObj;
   };
 
@@ -50,6 +52,8 @@ export const data = (() => {
     _updateTagIndex({ old: _dataArray[targetIndex] });
     _pruneTagIndex();
     _dataArray.splice(targetIndex, 1);
+
+    _setStorage();
   };
 
   const modifyTask = (inputTask) => {
@@ -72,6 +76,8 @@ export const data = (() => {
     _insertTask(modifiedTask);
     _updateTagIndex({ new: modifiedTask });
     _pruneTagIndex();
+
+    _setStorage();
 
     return inputTask;
   };
@@ -264,6 +270,26 @@ export const data = (() => {
     });
   };
 
+  // gets data from localStorage if available and not empty
+  // else generates sample task library
+  const getDataFromStorage = () => {
+    if (localStorage.dataArray == "[]" || !localStorage.dataArray) {
+      sampleTaskLibrary();
+      _setStorage();
+    } else {
+      _dataArray = JSON.parse(localStorage.dataArray);
+      uidCounter = JSON.parse(localStorage.uidCounter);
+      tagIndex = JSON.parse(localStorage.tagIndex);
+    }
+  };
+
+  // sets localStorage
+  const _setStorage = () => {
+    localStorage.dataArray = JSON.stringify(_dataArray);
+    localStorage.uidCounter = JSON.stringify(uidCounter);
+    localStorage.tagIndex = JSON.stringify(tagIndex);
+  };
+
   return {
     addTask,
     deleteTask,
@@ -272,6 +298,7 @@ export const data = (() => {
     getSearch,
     getTagIndex,
     getTagNameArray,
+    getDataFromStorage,
   };
 })();
 
@@ -283,7 +310,7 @@ const sampleTaskLibrary = () => {
     dueDate: getRandomISODate(),
     priority: "high",
   });
-  
+
   data.addTask({
     title: "Start planning CV website",
     notes: "Brainstorm layout and content",
@@ -339,4 +366,4 @@ const sampleTaskLibrary = () => {
     dueDate: new Date(),
     priority: "low",
   });
-}
+};
